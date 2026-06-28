@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>UpTop — Bounce higher. Grab more. Beat your best.</title>
+<meta name="description" content="UpTop is a cozy endless climbing game. Shout to jump, tilt to steer, race friends in real time, and climb as high as you can.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --sky-top:#d7eefc; --sky-mid:#aedaf4; --sky-deep:#79bce6;
+    --ink:#2d4d61; --ink-soft:#5a7c8f;
+    --coin:#f4b63e; --coin-deep:#dc991c;
+    --coral:#ec8b76; --coral-deep:#df7660;
+    --grass:#74c46a; --grass-deep:#549c4a;
+    --brown:#93653f; --carrot:#ee7d3c;
+    --card:rgba(255,255,255,.55); --card-line:rgba(255,255,255,.85);
+    --shadow:0 14px 34px rgba(45,77,97,.16);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Nunito',system-ui,sans-serif;color:var(--ink);
+    background:linear-gradient(180deg,var(--sky-top) 0%,var(--sky-mid) 55%,#bfe6c4 100%);
+    background-attachment:fixed;line-height:1.55;-webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  .wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+  .display{font-family:'Quicksand',sans-serif}
+
+  /* ---- App Store button ---- */
+  .appstore{
+    display:inline-flex;align-items:center;gap:11px;
+    background:#1b2733;color:#fff;text-decoration:none;
+    padding:13px 22px 13px 20px;border-radius:16px;
+    box-shadow:0 10px 24px rgba(27,39,51,.28);transition:transform .18s ease,box-shadow .18s ease;
+  }
+  .appstore:hover{transform:translateY(-2px);box-shadow:0 16px 30px rgba(27,39,51,.34)}
+  .appstore svg{width:26px;height:26px;flex:none}
+  .appstore .small{font-size:11px;letter-spacing:.06em;text-transform:uppercase;opacity:.78;line-height:1}
+  .appstore .big{font-family:'Quicksand',sans-serif;font-weight:600;font-size:19px;line-height:1.15}
+
+  /* ---- Hero ---- */
+  .hero{position:relative;padding:26px 0 40px;text-align:center}
+  .eyebrow{
+    font-weight:800;font-size:12.5px;letter-spacing:.22em;text-transform:uppercase;
+    color:var(--coral-deep);margin-bottom:14px;
+  }
+  .wordmark{
+    font-family:'Quicksand',sans-serif;font-weight:700;color:#fff;
+    font-size:clamp(64px,15vw,140px);line-height:.92;letter-spacing:-.01em;
+    text-shadow:0 6px 0 rgba(121,188,230,.45),0 18px 30px rgba(45,77,97,.25);
+  }
+  .wordmark b{color:var(--coin);font-weight:700;-webkit-text-stroke:0}
+  .tagline{
+    font-family:'Quicksand',sans-serif;font-weight:500;font-size:clamp(18px,3.4vw,24px);
+    color:var(--ink);margin:18px auto 4px;max-width:24ch;
+  }
+  .hero-cta{margin-top:26px;display:flex;flex-direction:column;align-items:center;gap:10px}
+  .meta{font-weight:700;font-size:14px;color:var(--ink-soft);display:flex;gap:8px;align-items:center}
+  .meta .dot{width:4px;height:4px;border-radius:50%;background:var(--ink-soft);opacity:.5}
+
+  /* ---- Climb scene (signature) ---- */
+  .scene{position:relative;width:min(340px,86vw);margin:34px auto 0;height:330px}
+  .scene .score{
+    position:absolute;top:-6px;left:50%;transform:translateX(-50%);
+    background:var(--card);border:1.5px solid var(--card-line);backdrop-filter:blur(8px);
+    border-radius:20px;padding:10px 20px;box-shadow:var(--shadow);text-align:center;z-index:3;
+  }
+  .scene .score .lbl{font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-soft);font-weight:800}
+  .scene .score .num{font-family:'Quicksand',sans-serif;font-weight:700;font-size:30px;color:var(--coin-deep);line-height:1}
+  .scene svg{position:absolute;inset:0;width:100%;height:100%;z-index:1}
+  .coin{
+    position:absolute;width:30px;height:30px;border-radius:50%;
+    background:radial-gradient(circle at 35% 30%,#ffe08a,var(--coin) 62%,var(--coin-deep));
+    border:2px solid var(--coin-deep);display:grid;place-items:center;color:#fff;font-size:13px;z-index:2;
+    box-shadow:0 4px 10px rgba(220,153,28,.35);
+  }
+  .bunny{
+    position:absolute;font-size:46px;z-index:3;filter:drop-shadow(0 8px 10px rgba(45,77,97,.25));
+    animation:bob 2.6s ease-in-out infinite;
+  }
+  .platform{
+    position:absolute;bottom:6px;left:50%;transform:translateX(-50%);
+    width:118px;height:26px;border-radius:14px;
+    background:linear-gradient(180deg,var(--grass),var(--grass-deep));
+    box-shadow:0 8px 16px rgba(84,156,74,.4);z-index:2;
+  }
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+
+  /* ---- Section frame ---- */
+  section{padding:54px 0}
+  .head{text-align:center;max-width:30ch;margin:0 auto 36px}
+  .head h2{font-family:'Quicksand',sans-serif;font-weight:700;font-size:clamp(28px,5vw,40px);color:var(--ink);line-height:1.1}
+  .head p{margin-top:12px;color:var(--ink-soft);font-weight:600;font-size:17px}
+
+  /* ---- Features ---- */
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+  .card{
+    background:var(--card);border:1.5px solid var(--card-line);backdrop-filter:blur(10px);
+    border-radius:22px;padding:24px;box-shadow:var(--shadow);transition:transform .2s ease;
+  }
+  .card:hover{transform:translateY(-5px)}
+  .card.lead{grid-column:span 2;background:linear-gradient(140deg,rgba(255,255,255,.7),rgba(236,139,118,.22))}
+  .card .ico{font-size:34px;line-height:1;margin-bottom:14px;display:block}
+  .card h3{font-family:'Quicksand',sans-serif;font-weight:700;font-size:21px;color:var(--ink);margin-bottom:7px}
+  .card p{color:var(--ink-soft);font-weight:600;font-size:15px}
+  @media(max-width:560px){.card.lead{grid-column:span 1}}
+
+  /* ---- Controls (real triad) ---- */
+  .controls{display:flex;flex-wrap:wrap;justify-content:center;gap:14px}
+  .ctrl{
+    flex:1 1 200px;max-width:300px;text-align:center;
+    background:var(--card);border:1.5px solid var(--card-line);backdrop-filter:blur(10px);
+    border-radius:22px;padding:26px 20px;box-shadow:var(--shadow);
+  }
+  .ctrl .big-ico{font-size:40px}
+  .ctrl h4{font-family:'Quicksand',sans-serif;font-weight:700;font-size:19px;margin:10px 0 4px;color:var(--ink)}
+  .ctrl p{color:var(--ink-soft);font-weight:600;font-size:14.5px}
+
+  /* ---- Final CTA ---- */
+  .final{text-align:center}
+  .final .panel{
+    background:linear-gradient(160deg,rgba(255,255,255,.66),rgba(174,218,244,.5));
+    border:1.5px solid var(--card-line);border-radius:30px;padding:48px 26px;box-shadow:var(--shadow);
+  }
+  .final h2{font-family:'Quicksand',sans-serif;font-weight:700;font-size:clamp(30px,6vw,46px);color:var(--ink);line-height:1.06}
+  .final p{color:var(--ink-soft);font-weight:600;font-size:17px;margin:14px auto 26px;max-width:34ch}
+
+  /* ---- Footer ---- */
+  footer{padding:40px 0 56px;text-align:center;color:var(--ink-soft)}
+  footer .fmark{font-family:'Quicksand',sans-serif;font-weight:700;font-size:26px;color:var(--ink)}
+  footer nav{display:flex;flex-wrap:wrap;gap:8px 22px;justify-content:center;margin:16px 0 14px;font-weight:700;font-size:14.5px}
+  footer a{color:var(--ink-soft);text-decoration:none}
+  footer a:hover{color:var(--coral-deep)}
+  footer .fine{font-size:13px;font-weight:600;opacity:.8}
+
+  @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">Endless Climbing Game</div>
+    <h1 class="wordmark">Up<b>Top</b></h1>
+    <p class="tagline">Bounce higher. Grab more. Beat your best.</p>
+
+    <!-- Replace href with your App Store link once live -->
+    <div class="hero-cta">
+      <a class="appstore" href="#download" aria-label="Download UpTop on the App Store">
+        <svg viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M16.37 1.43c.08 1-.32 1.98-.94 2.69-.66.74-1.74 1.31-2.78 1.23-.1-.97.36-1.99.96-2.64.67-.74 1.84-1.29 2.76-1.28zM19.9 17.3c-.5 1.16-.74 1.67-1.39 2.69-.9 1.42-2.17 3.18-3.74 3.2-1.4.01-1.76-.91-3.66-.9-1.9.01-2.29.91-3.69.9-1.57-.01-2.77-1.61-3.67-3.02C1.2 16.21.93 11.6 2.5 9.16c1.1-1.73 2.85-2.74 4.49-2.74 1.67 0 2.72.92 4.1.92 1.34 0 2.16-.92 4.09-.92 1.46 0 3 .8 4.1 2.17-3.6 1.97-3.02 7.11.62 8.71z"/></svg>
+        <span>
+          <span class="small">Download on the</span>
+          <span class="big">App Store</span>
+        </span>
+      </a>
+      <div class="meta"><span>Free</span><span class="dot"></span><span>Game Center</span><span class="dot"></span><span>iPhone &amp; iPad</span></div>
+    </div>
+
+    <div class="scene" aria-hidden="true">
+      <div class="score"><div class="lbl">Best Score</div><div class="num" id="score">0</div></div>
+      <svg viewBox="0 0 340 330" preserveAspectRatio="none">
+        <path d="M60 300 Q110 230 150 250 Q200 275 210 200 Q220 130 165 130 Q110 130 150 75 Q185 30 260 60"
+              fill="none" stroke="rgba(255,255,255,.85)" stroke-width="4" stroke-linecap="round" stroke-dasharray="2 13"/>
+      </svg>
+      <div class="coin" style="left:54px;top:228px">★</div>
+      <div class="coin" style="left:198px;top:188px">★</div>
+      <div class="coin" style="left:140px;top:108px">★</div>
+      <div class="bunny" style="left:232px;top:34px">🐰</div>
+      <div class="platform"></div>
+    </div>
+  </div>
+</header>
+
+<section>
+  <div class="wrap">
+    <div class="head">
+      <h2>Simple to play. Hard to put down.</h2>
+      <p>One tap to start, then keep climbing — every run is a new height to beat.</p>
+    </div>
+    <div class="grid">
+      <article class="card lead">
+        <span class="ico">🗣️</span>
+        <h3>Shout to jump higher</h3>
+        <p>Flip on Voice Jump and your voice powers the boost — the louder you cheer, the higher you fly. The mic stays on your device and nothing is recorded.</p>
+      </article>
+      <article class="card">
+        <span class="ico">🎮</span>
+        <h3>Real-time multiplayer</h3>
+        <p>Race a friend live through Game Center in Climb Higher, Survival, or Time Attack.</p>
+      </article>
+      <article class="card">
+        <span class="ico">👻</span>
+        <h3>Ghost Race</h3>
+        <p>Send a run as a challenge link and watch rivals chase your ghost to the top.</p>
+      </article>
+      <article class="card">
+        <span class="ico">🏆</span>
+        <h3>Leaderboards</h3>
+        <p>Climb the global Game Center board and see where you land against everyone.</p>
+      </article>
+      <article class="card">
+        <span class="ico">📱</span>
+        <h3>Tilt to steer</h3>
+        <p>Lean your phone to glide left and right — smooth, responsive, one-handed.</p>
+      </article>
+      <article class="card">
+        <span class="ico">🔥</span>
+        <h3>Daily challenges</h3>
+        <p>Fresh goals every day and a streak that rewards you for coming back.</p>
+      </article>
+      <article class="card">
+        <span class="ico">🪙</span>
+        <h3>Coins &amp; skins</h3>
+        <p>Grab coins and carrots on the way up, then unlock new character skins in the shop.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="head">
+      <h2>Three ways to climb</h2>
+      <p>Mix them however you like — the higher you go, the trickier it gets.</p>
+    </div>
+    <div class="controls">
+      <div class="ctrl"><div class="big-ico">📲</div><h4>Tilt</h4><p>Steer left and right by leaning your device.</p></div>
+      <div class="ctrl"><div class="big-ico">👆</div><h4>Tap</h4><p>Tap to shoot and clear what's in your way.</p></div>
+      <div class="ctrl"><div class="big-ico">📢</div><h4>Shout</h4><p>Use your voice for an extra burst upward.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="final" id="download">
+  <div class="wrap">
+    <div class="panel">
+      <h2>How high can you climb?</h2>
+      <p>Download UpTop and start your first ascent. Free to play.</p>
+      <!-- Replace href with your App Store link once live -->
+      <a class="appstore" href="#" aria-label="Download UpTop on the App Store">
+        <svg viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M16.37 1.43c.08 1-.32 1.98-.94 2.69-.66.74-1.74 1.31-2.78 1.23-.1-.97.36-1.99.96-2.64.67-.74 1.84-1.29 2.76-1.28zM19.9 17.3c-.5 1.16-.74 1.67-1.39 2.69-.9 1.42-2.17 3.18-3.74 3.2-1.4.01-1.76-.91-3.66-.9-1.9.01-2.29.91-3.69.9-1.57-.01-2.77-1.61-3.67-3.02C1.2 16.21.93 11.6 2.5 9.16c1.1-1.73 2.85-2.74 4.49-2.74 1.67 0 2.72.92 4.1.92 1.34 0 2.16-.92 4.09-.92 1.46 0 3 .8 4.1 2.17-3.6 1.97-3.02 7.11.62 8.71z"/></svg>
+        <span><span class="small">Download on the</span><span class="big">App Store</span></span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="fmark">UpTop</div>
+    <nav>
+      <a href="#download">Download</a>
+      <!-- Point these to your hosted pages -->
+      <a href="./index.html">Privacy Policy</a>
+      <a href="mailto:azerioid@gmail.com">Support</a>
+    </nav>
+    <div class="fine">Made by Ramil Huseynov · © 2026 · azerioid@gmail.com</div>
+  </div>
+</footer>
+
+<script>
+  (function(){
+    var el=document.getElementById('score'), target=5092;
+    if(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches){el.textContent=target.toLocaleString();return;}
+    var start=null, dur=1400;
+    function step(t){
+      if(!start)start=t;
+      var p=Math.min((t-start)/dur,1), eased=1-Math.pow(1-p,3);
+      el.textContent=Math.round(target*eased).toLocaleString();
+      if(p<1)requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  })();
+</script>
+</body>
+</html>
